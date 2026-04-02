@@ -3,15 +3,15 @@
 	"id": "rocketjumping",
 	"version": "${version}",
 	"name": "Rocket Jumping",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "it adds what you think it adds",
 	"authors": [
-		"Me!"
+		"@fluttercat555"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://fluttercat.dev/",
+		"sources": "https://github.com/FlutterCat555/rocketjumping"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/rocketjumping/icon.png",
 	"environment": "*",
 	"entrypoints": {

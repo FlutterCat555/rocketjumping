@@ -37,10 +37,11 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
         if(target==this.getOwner()) {
             scale = 1.75;
             damage = damage / 2;
-            direction = new Vec3(direction.x * 2, direction.y, direction.z * 2 );
+            direction = new Vec3(direction.x * 3, direction.y, direction.z * 3 );
             target.setOnGround(false);
             target.setDeltaMovement(direction.scale(scale));
             target.hurtMarked = true;
+            target.setIgnoreFallDamageFromCurrentImpulse(true,this.position());
         }
 
 

@@ -1,6 +1,7 @@
-package dev.fluttercat.mixin;
+package dev.fluttercat.rocketjumping.mixin;
 
-import dev.fluttercat.RocketJumping;
+
+import dev.fluttercat.rocketjumping.RocketJumping;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -35,6 +37,9 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
         Vec3 direction = targetPos.subtract(rocketPos).normalize();
         double scale;
         if(target==this.getOwner()) {
+            if(direction.y<0.1){
+                direction = new Vec3(direction.x/3,direction.y+1,direction.z/3);
+            }
             scale = 1.75;
             damage = damage / 2;
             direction = new Vec3(direction.x * 3, direction.y, direction.z * 3 );
@@ -42,12 +47,8 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
             target.setDeltaMovement(direction.scale(scale));
             target.hurtMarked = true;
             target.setIgnoreFallDamageFromCurrentImpulse(true,this.position());
+            RocketJumping.rocketJumpingPlayers.add(target.getUUID());
         }
-
-
-
-
-
         return target.hurtServer(level, source, damage);
     }
 }

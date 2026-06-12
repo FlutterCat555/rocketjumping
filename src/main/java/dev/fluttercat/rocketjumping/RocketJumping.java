@@ -1,12 +1,17 @@
-package dev.fluttercat;
+package dev.fluttercat.rocketjumping;
 
 import net.fabricmc.api.ModInitializer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class RocketJumping implements ModInitializer {
 	public static final String MOD_ID = "rocketjumping";
+
+	public static final Set<UUID> rocketJumpingPlayers = new HashSet<>();
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.

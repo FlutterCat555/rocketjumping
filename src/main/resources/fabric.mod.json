@@ -5,7 +5,8 @@
 	"name": "Rocket Jumping",
 	"description": "it adds what you think it adds",
 	"authors": [
-		"@fluttercat555"
+		"@fluttercat555",
+		"Cammie's Corner - Example on adjusting air maneuverability"
 	],
 	"contact": {
 		"homepage": "https://fluttercat.dev/",
@@ -16,10 +17,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"dev.fluttercat.RocketJumping"
+			"dev.fluttercat.rocketjumping.RocketJumping"
 		],
 		"fabric-datagen": [
-			"dev.fluttercat.RocketJumpingDataGenerator"
+			"dev.fluttercat.rocketjumping.RocketJumpingDataGenerator"
 		]
 	},
 	"mixins": [
@@ -27,7 +28,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.18.5",
-		"minecraft": "~26.1",
+		"minecraft": "~26.1.2",
 		"java": ">=25",
 		"fabric-api": "*"
 	}

@@ -1,24 +1,32 @@
 package dev.fluttercat.rocketjumping.mixin;
 
 
-import dev.fluttercat.rocketjumping.RocketJumping;
+import dev.fluttercat.rocketjumping.TempInterface;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Mixin(FireworkRocketEntity.class)
-public abstract class FireworkRocketEntityMixin extends Projectile {
+public abstract class FireworkRocketEntityMixin extends Projectile implements TempInterface {
+    @Shadow
+    protected abstract List<FireworkExplosion> getExplosions();
+
     public FireworkRocketEntityMixin(EntityType<? extends @NotNull Projectile> type, Level level) {
         super(type, level);
     }
@@ -32,23 +40,24 @@ public abstract class FireworkRocketEntityMixin extends Projectile {
             )
     )
     private boolean dealExplosionDamage(LivingEntity target, ServerLevel level, DamageSource source, float damage) {
-        Vec3 rocketPos = this.position();
-        Vec3 targetPos = target.position();
-        Vec3 direction = targetPos.subtract(rocketPos).normalize();
-        double scale;
+        Vec3 direction = target.position().subtract(this.position()).normalize();
         if(target==this.getOwner()) {
-            if(direction.y<0.1){
-                direction = new Vec3(direction.x/3,direction.y+1,direction.z/3);
-            }
-            scale = 1.75;
             damage = damage / 2;
-            direction = new Vec3(direction.x * 3, direction.y, direction.z * 3 );
-            target.setOnGround(false);
-            target.setDeltaMovement(direction.scale(scale));
-            target.hurtMarked = true;
-            target.setIgnoreFallDamageFromCurrentImpulse(true,this.position());
-            RocketJumping.rocketJumpingPlayers.add(target.getUUID());
         }
+        if(direction.y==0.0) {
+            direction = direction.add(0,0.75,0); //launch up if on ground
+        }
+        direction = direction.add(0,0.2,0);//TODO: finish balancing
+        int explosions = this.getExplosions().size();
+        double mult = 1.25+((double) explosions /4);
+        target.setDeltaMovement(direction.scale(mult));
+
+        target.setIgnoreFallDamageFromCurrentImpulse(true,this.position());
+
+
+        ((TempInterface)target).rocketjumping$setRocketJumping(true); //cast to interface because otherwise no
+        target.setOnGround(false);
+        target.hurtMarked = true;
         return target.hurtServer(level, source, damage);
     }
 }

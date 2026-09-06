@@ -3,7 +3,6 @@ package dev.fluttercat.rocketjumping.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.fluttercat.rocketjumping.RocketJumping;
 import dev.fluttercat.rocketjumping.TempInterface;
-import moriyashiine.enchancement.common.EnchancementConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -74,8 +73,6 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
 
     @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dealDefaultKnockback(Lnet/minecraft/world/damagesource/DamageSource;FZ)V", shift = At.Shift.AFTER))
     private void actuallyWhatIfWeDontRebalanceProjectiles(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if (EnchancementConfig.rebalanceProjectiles && source.getDirectEntity() instanceof Projectile) {
-            setDeltaMovement(rocketjumping$fixEnchancementVelocity);
-        }
+        setDeltaMovement(rocketjumping$fixEnchancementVelocity);
     }
 }

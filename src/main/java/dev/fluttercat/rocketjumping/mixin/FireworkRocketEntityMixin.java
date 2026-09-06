@@ -2,7 +2,6 @@ package dev.fluttercat.rocketjumping.mixin;
 
 
 import dev.fluttercat.rocketjumping.TempInterface;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Mixin(FireworkRocketEntity.class)
@@ -41,21 +39,21 @@ public abstract class FireworkRocketEntityMixin extends Projectile implements Te
     )
     private boolean dealExplosionDamage(LivingEntity target, ServerLevel level, DamageSource source, float damage) {
         Vec3 direction = target.position().subtract(this.position()).normalize();
-        if(target==this.getOwner()) {
+        if (target == this.getOwner()) {
             damage = damage / 2;
         }
-        if(direction.y==0.0) {
-            direction = direction.add(0,0.75,0); //launch up if on ground
+        if (direction.y == 0.0) {
+            direction = direction.add(0, 0.75, 0); //launch up if on ground
         }
-        direction = direction.add(0,0.2,0);//TODO: finish balancing
+        direction = direction.add(0, 0.2, 0);//TODO: finish balancing
         int explosions = this.getExplosions().size();
-        double mult = 1.25+((double) explosions /4);
+        double mult = 1.25 + ((double) explosions / 4);
         target.setDeltaMovement(direction.scale(mult));
 
-        target.setIgnoreFallDamageFromCurrentImpulse(true,this.position());
+        target.setIgnoreFallDamageFromCurrentImpulse(true, this.position());
 
 
-        ((TempInterface)target).rocketjumping$setRocketJumping(true); //cast to interface because otherwise no
+        ((TempInterface) target).rocketjumping$setRocketJumping(true); //cast to interface because otherwise no
         target.setOnGround(false);
         target.hurtMarked = true;
         return target.hurtServer(level, source, damage);

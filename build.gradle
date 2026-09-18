@@ -11,6 +11,18 @@ base {
 }
 
 repositories {
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		// forRepositories(fg.repository) // Uncomment when using ForgeGradle
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 fabricApi {
@@ -27,7 +39,9 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-
+	implementation "maven.modrinth:6hN1V6wJ:hzHT64DY"
+	implementation "maven.modrinth:9Ya7Yyre:taWe52SL"
+	implementation "maven.modrinth:mOgUt4GM:WdLLrOzD"
 }
 
 processResources {

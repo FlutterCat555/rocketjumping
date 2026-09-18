@@ -75,7 +75,7 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
 
     @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dealDefaultKnockback(Lnet/minecraft/world/damagesource/DamageSource;FZ)V", shift = At.Shift.AFTER))
     private void actuallyWhatIfWeDontRebalanceProjectiles(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if(source.equals(DamageTypes.FIREWORKS)) {
+        if(source.is(DamageTypes.FIREWORKS)) {
             setDeltaMovement(rocketjumping$fixEnchancementVelocity);
         }
     }

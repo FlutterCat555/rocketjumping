@@ -55,7 +55,7 @@ public abstract class FireworkRocketEntityMixin extends Projectile implements Te
 
         ((TempInterface) target).rocketjumping$setRocketJumping(true); //cast to interface because otherwise no
         target.setOnGround(false);
-        target.hurtMarked = true;
+//        target.hurtMarked = true;
         return target.hurtServer(level, source, damage);
     }
 }

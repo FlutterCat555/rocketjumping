@@ -15,11 +15,8 @@
 	"icon": "assets/rocketjumping/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"server": [
 			"dev.fluttercat.rocketjumping.RocketJumping"
-		],
-		"fabric-datagen": [
-			"dev.fluttercat.rocketjumping.RocketJumpingDataGenerator"
 		]
 	},
 	"mixins": [
@@ -27,7 +24,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.18.5",
-		"minecraft": "~26.2",
+		"minecraft": "~26.3",
 		"java": ">=25",
 		"fabric-api": "*"
 	}

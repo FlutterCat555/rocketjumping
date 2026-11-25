@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -15,10 +16,15 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -40,24 +46,20 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
     @Shadow
     public abstract boolean hasEffect(Holder<MobEffect> effect);
 
+    @Shadow
+    public abstract @Nullable AttributeInstance getAttribute(Holder<Attribute> attribute);
 
     @Unique
-    private static final EntityDataAccessor<Boolean> ROCKET_JUMPING =
-            SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.BOOLEAN);
-
-    @Inject(method = "defineSynchedData", at = @At("TAIL")) //what was i on about ts is understandable
-    private void defineRocketJumpData(SynchedEntityData.Builder builder, CallbackInfo ci) {
-        builder.define(ROCKET_JUMPING, false);
-    }
+    private boolean isRocketJumping;
 
     @Override
     public void rocketjumping$setRocketJumping(boolean value) {
-        this.getEntityData().set(ROCKET_JUMPING, value);
+        isRocketJumping = value;
     }
 
     @Override
     public boolean rocketjumping$isRocketJumping() {
-        return this.getEntityData().get(ROCKET_JUMPING);
+        return this.isRocketJumping;
     }
 
     @ModifyReturnValue(method = "getEffectiveGravity", at = @At("RETURN"))
@@ -68,6 +70,22 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
         return original;
     }
 
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void tick(CallbackInfo ci) {
+        AttributeInstance gravity = this.getAttribute(Attributes.GRAVITY);
+        AttributeInstance drag = this.getAttribute(Attributes.AIR_DRAG_MODIFIER);
+        if (gravity != null && drag != null) {
+            if (this.rocketjumping$isRocketJumping() && !this.hasEffect(MobEffects.SLOW_FALLING)) {
+                gravity.setBaseValue(0.06);
+                drag.setBaseValue(0.01);
+                RocketJumping.LOGGER.info("a");
+            } else {
+                gravity.setBaseValue(0.08);
+                drag.setBaseValue(1.0);
+            }
+        }
+    }
+
     @Inject(method = "hurtServer", at = @At("HEAD"))
     private void hurtServer(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
         rocketjumping$fixEnchancementVelocity = this.getDeltaMovement();
@@ -75,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
 
     @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dealDefaultKnockback(Lnet/minecraft/world/damagesource/DamageSource;FZ)V", shift = At.Shift.AFTER))
     private void actuallyWhatIfWeDontRebalanceProjectiles(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if(source.is(DamageTypes.FIREWORKS)) {
+        if (source.is(DamageTypes.FIREWORKS)) {
             setDeltaMovement(rocketjumping$fixEnchancementVelocity);
         }
     }

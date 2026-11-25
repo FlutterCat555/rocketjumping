@@ -3,6 +3,8 @@
   "package": "dev.fluttercat.rocketjumping.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+  ],
+  "server": [
     "FireworkRocketEntityMixin",
     "LivingEntityMixin",
     "PlayerMixin"

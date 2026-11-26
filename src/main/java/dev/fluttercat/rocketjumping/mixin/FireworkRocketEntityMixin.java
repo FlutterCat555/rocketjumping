@@ -45,7 +45,7 @@ public abstract class FireworkRocketEntityMixin extends Projectile implements Te
         if (direction.y == 0.0) {
             direction = direction.add(0, 0.75, 0); //launch up if on ground
         }
-        direction = direction.add(0, 0.2, 0);//TODO: finish balancing
+        direction = direction.add(0, -0.25, 0);//TODO: finish balancing
         int explosions = this.getExplosions().size();
         double mult = 1.25 + ((double) explosions / 4);
         target.setDeltaMovement(direction.scale(mult));

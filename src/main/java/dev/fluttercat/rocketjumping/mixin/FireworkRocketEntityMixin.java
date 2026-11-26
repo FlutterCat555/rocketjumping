@@ -47,7 +47,7 @@ public abstract class FireworkRocketEntityMixin extends Projectile implements Te
         }
         direction = direction.add(0, -0.25, 0);//TODO: finish balancing
         int explosions = this.getExplosions().size();
-        double mult = 1.25 + ((double) explosions / 4);
+        double mult = 1.0 + ((double) explosions / 5);
         target.setDeltaMovement(direction.scale(mult));
 
         target.setIgnoreFallDamageFromCurrentImpulse(true, this.position());

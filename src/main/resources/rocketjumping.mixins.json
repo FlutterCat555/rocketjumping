@@ -7,7 +7,8 @@
   "server": [
     "FireworkRocketEntityMixin",
     "LivingEntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "CrossbowMixin"
   ],
   "injectors": {
     "defaultRequire": 1

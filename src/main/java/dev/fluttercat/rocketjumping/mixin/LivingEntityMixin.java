@@ -77,8 +77,7 @@ public abstract class LivingEntityMixin extends Entity implements TempInterface 
         if (gravity != null && drag != null) {
             if (this.rocketjumping$isRocketJumping() && !this.hasEffect(MobEffects.SLOW_FALLING)) {
                 gravity.setBaseValue(0.06);
-                drag.setBaseValue(0.01);
-                RocketJumping.LOGGER.info("a");
+                drag.setBaseValue(0.1);
             } else {
                 gravity.setBaseValue(0.08);
                 drag.setBaseValue(1.0);
